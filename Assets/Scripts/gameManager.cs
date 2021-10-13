@@ -7,9 +7,9 @@ public class gameManager : MonoBehaviour
 {
 
     public GameObject startPanel;
-    public GameObject continuePanel;
-    public GameObject successPanel;
-    public GameObject failPanel;
+    // public GameObject continuePanel;
+    // public GameObject successPanel;
+    // public GameObject failPanel;
     public static gameManager I;
 
     void Awake()
