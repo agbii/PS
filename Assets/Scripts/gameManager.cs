@@ -7,9 +7,9 @@ public class gameManager : MonoBehaviour
 {
 
     public GameObject startPanel;
-    // public GameObject continuePanel;
-    // public GameObject successPanel;
-    // public GameObject failPanel;
+    public GameObject continuePanel;
+    public GameObject successPanel;
+    public GameObject failPanel;
     public static gameManager I;
 
     void Awake()
@@ -40,6 +40,7 @@ public class gameManager : MonoBehaviour
     }
 
     public void gameStart() {
+        // 게임이 시작
         //string sceneName = "TestLevel";
         // SceneManager.LoadScene(sceneName);
         startPanel.SetActive(false);
