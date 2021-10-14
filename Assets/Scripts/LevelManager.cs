@@ -9,12 +9,14 @@ public class LevelManager : MonoBehaviour
 {
     public Board board;
     public int currentLevel;
+    public int lastLevel;
 
     // Start is called before the first frame update
     void Start()
     {
         Scene scene = SceneManager.GetActiveScene();
         currentLevel = int.Parse(scene.name);
+        lastLevel = 37;
         Debug.Log("Current Level : " + currentLevel.ToString());
 
         //RR
@@ -298,6 +300,38 @@ public class LevelManager : MonoBehaviour
             board.quizzes[0] = 3;
             board.quizzes[1] = 0;
             board.quizzes[2] = 2;
+        }
+        //RR
+        else if (currentLevel == 34)
+        {
+            board.answerCount = 5;
+            board.quizCount = 1;
+            board.quizzes = new int[board.quizCount];
+            board.quizzes[0] = 0;
+        }
+        //RL
+        else if (currentLevel == 35)
+        {
+            board.answerCount = 5;
+            board.quizCount = 1;
+            board.quizzes = new int[board.quizCount];
+            board.quizzes[0] = 1;
+        }
+        //FH
+        else if (currentLevel == 36)
+        {
+            board.answerCount = 5;
+            board.quizCount = 1;
+            board.quizzes = new int[board.quizCount];
+            board.quizzes[0] = 2;
+        }
+        //FV
+        else if (currentLevel == 37)
+        {
+            board.answerCount = 5;
+            board.quizCount = 1;
+            board.quizzes = new int[board.quizCount];
+            board.quizzes[0] = 3;
         }
         else
         {
