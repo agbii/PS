@@ -10,6 +10,7 @@ public class LevelManager : MonoBehaviour
     public Board board;
     public int currentLevel;
     public int lastLevel;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -350,9 +351,12 @@ public class LevelManager : MonoBehaviour
         PlayerPrefs.SetInt("levelSave", currentLevel+1);
     }
 
-    public void LoadLevel()
+    public void LoadLevel(bool isLoaded)
     {
-        SceneManager.LoadScene(PlayerPrefs.GetString("levelSave", "LEVEL 1"));
+        if(!isLoaded)
+        {
+            SceneManager.LoadScene(PlayerPrefs.GetString("levelSave", "1"));
+        }
     }
 
     public void DeleteStones()

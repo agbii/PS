@@ -9,7 +9,6 @@ public class gameManager : MonoBehaviour
 
     public GameObject startPanel;
     public GameObject successPanel;
-    public GameObject failPanel;
     public GameObject msgPanel;
 
     public Text levelText;
@@ -19,27 +18,31 @@ public class gameManager : MonoBehaviour
     public Board board;
     public LevelManager levelManager;
 
+    public bool isLoaded;
+
     public static gameManager I;
 
-    public int replayTimes;
+    // public int replayTimes;
 
     bool success;
 
     void Awake()
     {
+        isLoaded = false;
         I = this;
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        isLoaded = true;
         ShowLevelText();
         InitializeGame();
     }
 
     private void InitializeGame()
     {
-        levelManager.LoadLevel();
+        levelManager.LoadLevel(isLoaded);
         ShowStartPanel();
     }
 
@@ -60,11 +63,6 @@ public class gameManager : MonoBehaviour
         {
             ShowMsgCongrats();
         }
-    }
-
-    void LevelFail()
-    {
-        failPanel.SetActive(true);
     }
 
     // Update is called once per frame
@@ -91,19 +89,20 @@ public class gameManager : MonoBehaviour
     public void GameStart()
     {
         startPanel.SetActive(false);
-        replayTimes = 2;
+        // replayTimes = 2;
         board.StartBoard();
     }
 
     public void StartNextLevel()
     {
-        successPanel.SetActive(false);
+        Debug.Log("Loading");
         SceneManager.LoadScene(levelManager.currentLevel.ToString());
+        successPanel.SetActive(false);
     }
 
     public void Resume()
     {
-        failPanel.SetActive(false);
+        msgPanel.SetActive(false);
         board.ActivateStoneCollider();
     }
 
@@ -115,21 +114,23 @@ public class gameManager : MonoBehaviour
 
     public void UseReplay()
     {
-        if (replayTimes > 0)
-        {
-            replayTimes -= 1;
-            Debug.Log("replayTimes = " + replayTimes.ToString());
-            if(replayTimes != 0)
-            {
-                replayText.text = replayTimes.ToString();
-            }
-            else
-            {
-                replayText.text = "AD";
-            }
-            board.Reset();
-            board.ActivateStoneCollider();
-        }
+        board.Reset();
+        board.ActivateStoneCollider();
+        // if (replayTimes > 0)
+        // {
+        //     replayTimes -= 1;
+        //     Debug.Log("replayTimes = " + replayTimes.ToString());
+        //     if(replayTimes != 0)
+        //     {
+        //         replayText.text = replayTimes.ToString();
+        //     }
+        //     else
+        //     {
+        //         replayText.text = "AD";
+        //     }
+        //     board.Reset();
+        //     board.ActivateStoneCollider();
+        // }
     }
 
     public void ShowMsgRemember()
@@ -137,7 +138,6 @@ public class gameManager : MonoBehaviour
         msgText.text = "REMEMBER!";
         msgPanel.SetActive(true);
         successPanel.SetActive(false);
-        failPanel.SetActive(false);
     }
 
     public void ShowMsgClick()
@@ -145,7 +145,6 @@ public class gameManager : MonoBehaviour
         msgText.text = "CLICK!";
         msgPanel.SetActive(true);
         successPanel.SetActive(false);
-        failPanel.SetActive(false);
     }
 
     public void ShowMsgCongrats()
@@ -153,7 +152,14 @@ public class gameManager : MonoBehaviour
         msgText.text = "YOU WON!";
         msgPanel.SetActive(true);
         successPanel.SetActive(false);
-        failPanel.SetActive(false);
+    }
+
+    void LevelFail()
+    {
+        msgText.text = "WRONG!";
+        board.ActivateStoneCollider();
+        msgPanel.SetActive(true);
+        successPanel.SetActive(false);
     }
 
 }

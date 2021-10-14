@@ -33,6 +33,7 @@ public class Board : MonoBehaviour
     // 임시 저장소
     public Stone tempStone;
     Quiz quiz;
+    public GameObject[] quizTypes;
 
     public LevelManager levelManager;
 
@@ -52,9 +53,9 @@ public class Board : MonoBehaviour
         tempAnswerArray = new int[boardWidth * boardHeight];
         userAnswer = new int[answerCount];
 
-
         // 보드판 생성, 순서 섞기
         SpawnStones();
+        SpawnQuizzes();
         //ShuffleStoneOrder();
         MakeRandomQuestion(answerCount);
 
@@ -79,23 +80,6 @@ public class Board : MonoBehaviour
                 Stone stone = Instantiate(stonePrefab, pos, Quaternion.identity);
                 stone.transform.parent = this.transform;
 
-                // if(levelManager.currentLevel < 5)
-                // {
-                //     sprite = stone.GetComponent<SpriteRenderer>();
-                //     if (id == 0)
-                //     {
-                //         sprite.material.color = new Color(62, 47, 99);    
-                //     }
-                //     else if(id == 1)
-                //     {
-                //         sprite.material.color = new Color(236, 84, 76);
-                //     }
-                //     else if (id == 2)
-                //     {
-                //         sprite.material.color = new Color(79, 83, 162);
-                //     }
-                // }
-
                 // 생성한 stone을 allStones array에 저장
                 allStones[id] = stone;
 
@@ -119,6 +103,36 @@ public class Board : MonoBehaviour
         }
         DeactivateStoneCollider();
     }
+
+    public void SpawnQuizzes()
+    {
+        if(quizzes.Length == 1)
+        {
+            Vector3 pos = new Vector3(0.5f, 3f, 0f);
+            SpawnQuiz(pos, quizTypes[quizzes[0]]);
+        }
+        else if(quizzes.Length == 2)
+        {
+            Vector3 pos1 = new Vector3(0f, 3f, 0f);
+            SpawnQuiz(pos1, quizTypes[quizzes[0]]);
+            Vector3 pos2 = new Vector3(1f, 3f, 0f);
+            SpawnQuiz(pos2, quizTypes[quizzes[1]]);
+        }
+        else if(quizzes.Length == 3)
+        {
+            Vector3 pos1 = new Vector3(-0.5f, 3f, 0f);
+            SpawnQuiz(pos1, quizTypes[quizzes[0]]);
+            Vector3 pos2 = new Vector3(0.5f, 3f, 0f);
+            SpawnQuiz(pos1, quizTypes[quizzes[1]]);
+            Vector3 pos3 = new Vector3(1.5f, 3f, 0f);
+            SpawnQuiz(pos1, quizTypes[quizzes[2]]);
+        }
+        else
+        {
+            Debug.Log("too many quizzes");
+        }
+    }
+
 
     void SetStoneColors()
     {
@@ -424,6 +438,11 @@ public class Board : MonoBehaviour
         }
     }
 
+    void SpawnQuiz(Vector3 pos, GameObject quizToSpawn)
+    {
+        GameObject quiz = Instantiate(quizToSpawn, new Vector3(pos.x, pos.y, pos.z), Quaternion.identity);
+        quiz.transform.parent = transform;
+    }
     // Update is called once per frame
     void Update()
     {
