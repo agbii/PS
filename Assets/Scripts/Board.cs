@@ -34,14 +34,14 @@ public class Board : MonoBehaviour
     public Stone tempStone;
     Quiz quiz;
 
-    Animator anim;
+    public LevelManager levelManager;
+
     SpriteRenderer sprite;
 
 
     // Start is called before the first frame update
     void Start()
     {
-
     }
 
     public void StartBoard()
@@ -60,7 +60,8 @@ public class Board : MonoBehaviour
 
         // 순서에 따라 깜빡임, 퀴즈에 따라 위치 변경
         StartCoroutine("GamePlay");
-        
+
+
     }
 
     // 보드판 생성 함수
@@ -78,12 +79,22 @@ public class Board : MonoBehaviour
                 Stone stone = Instantiate(stonePrefab, pos, Quaternion.identity);
                 stone.transform.parent = this.transform;
 
-                // transform 시각적 확인 위해 임시로 임의 색상 씌우기
-                float rnd1 = UnityEngine.Random.Range(0f, 1f);
-                float rnd2 = UnityEngine.Random.Range(0f, 1f);
-                float rnd3 = UnityEngine.Random.Range(0f, 1f);
-                sprite = stone.GetComponent<SpriteRenderer>();
-                sprite.material.color = new Color(rnd1, rnd2, rnd3);
+                // if(levelManager.currentLevel < 5)
+                // {
+                //     sprite = stone.GetComponent<SpriteRenderer>();
+                //     if (id == 0)
+                //     {
+                //         sprite.material.color = new Color(62, 47, 99);    
+                //     }
+                //     else if(id == 1)
+                //     {
+                //         sprite.material.color = new Color(236, 84, 76);
+                //     }
+                //     else if (id == 2)
+                //     {
+                //         sprite.material.color = new Color(79, 83, 162);
+                //     }
+                // }
 
                 // 생성한 stone을 allStones array에 저장
                 allStones[id] = stone;
@@ -102,8 +113,24 @@ public class Board : MonoBehaviour
                 stone.name = "stone - " + stone.GetComponent<Stone>().stoneId;
             }
         }
-
+        if(levelManager.currentLevel < 5)
+        {
+            SetStoneColors();
+        }
         DeactivateStoneCollider();
+    }
+
+    void SetStoneColors()
+    {
+        sprite = allStones[0].GetComponent<SpriteRenderer>();
+        sprite.material.color = new Color(0.984f, 0.780f, 0.251f);
+        sprite = allStones[1].GetComponent<SpriteRenderer>();
+        sprite.material.color = new Color(0.027f, 0.733f, 0.612f);
+        sprite = allStones[2].GetComponent<SpriteRenderer>();
+        sprite.material.color = new Color(0.4f, 0.824f, 0.839f);
+        sprite = allStones[3].GetComponent<SpriteRenderer>();
+        sprite.material.color = new Color(0.741f, 0.592f, 0.796f);
+        
     }
 
     // 정답 배열을 랜덤 순서로 변경
@@ -130,19 +157,20 @@ public class Board : MonoBehaviour
 
     IEnumerator GamePlay()
     {
+        gameManager.I.ShowMsgRemember();
         for (int j = 0; j < answerArray.Length; j++)
         {
             int temp = Array.IndexOf(stoneIds, answerArray[j]);
             allStones[temp].BlinkStone();
-            yield return new WaitForSecondsRealtime(1);
+            yield return new WaitForSecondsRealtime(0.5f);
             allStones[temp].BlinkOff();
         }
 
         yield return new WaitForSecondsRealtime(0.1f);
         
         StartCoroutine("ApplyQuiz");
-        yield return new WaitForSecondsRealtime(0.5f);
-        ActivateStoneCollider();
+        yield return new WaitForSecondsRealtime(0.1f);
+               
     }
 
     // 시간차 두고 stoneIds[] 깜빡이기
@@ -162,7 +190,7 @@ public class Board : MonoBehaviour
                     allStones[stoneIds[j]].RedrawStone();
                 }
 
-                yield return new WaitForSecondsRealtime(0.5f);
+                yield return new WaitForSecondsRealtime(0.2f);
             }
             else if (quizzes[i] == 1)
             {
@@ -175,7 +203,7 @@ public class Board : MonoBehaviour
                     allStones[stoneIds[j]].RedrawStone();
                 }
 
-                yield return new WaitForSecondsRealtime(0.5f);
+                yield return new WaitForSecondsRealtime(0.2f);
             }
             else if (quizzes[i] == 2)
             {
@@ -188,7 +216,7 @@ public class Board : MonoBehaviour
                     allStones[stoneIds[j]].RedrawStone();
                 }
 
-                yield return new WaitForSecondsRealtime(0.5f);
+                yield return new WaitForSecondsRealtime(0.2f);
             }
             else if (quizzes[i] == 3)
             {
@@ -201,13 +229,15 @@ public class Board : MonoBehaviour
                     allStones[stoneIds[j]].RedrawStone();
                 }
 
-                yield return new WaitForSecondsRealtime(0.5f);
+                yield return new WaitForSecondsRealtime(0.2f);
             }
             else
             {
                 Debug.Log("ERROR!!");
             }
         }
+        gameManager.I.ShowMsgClick();
+        ActivateStoneCollider();
     }
 
     void RotateRight()
@@ -321,7 +351,6 @@ public class Board : MonoBehaviour
     public bool CheckAnswer()
     {
         bool success = true;
-        // Time.timeScale = 0f;
 
         for (int i = 0; i < answerCount; i++)
         {
@@ -349,24 +378,6 @@ public class Board : MonoBehaviour
         }
     }
 
-    // IEnumerator StoneBlinkAndReset()
-    // {
-    //     for (int i = 0; i < stoneIds.Length; i++)
-    //     {
-    //         allStones[stoneIds[i]].RedrawStone();
-    //     }
-
-    //     yield return new WaitForSecondsRealtime(0.5f);
-
-    //     for (int i = 0; i < answerArray.Length; i++)
-    //     {
-    //         int temp = Array.IndexOf(stoneIds, answerArray[i]);
-    //         allStones[temp].BlinkStone();
-    //         yield return new WaitForSecondsRealtime(1);
-    //         allStones[temp].BlinkOff();
-    //     }
-    // }
-
     public void DeactivateStoneCollider()
     {
         for (int i = 0; i < allStones.Length; i++)
@@ -385,6 +396,7 @@ public class Board : MonoBehaviour
 
     public void Reset()
     {
+        DeactivateStoneCollider();
         DestroyStones();
         SpawnStones();
         StartCoroutine("GamePlay");
@@ -399,7 +411,7 @@ public class Board : MonoBehaviour
         {
             int temp = Array.IndexOf(stoneIds, answerArray[j]);
             allStones[temp].BlinkStone();
-            yield return new WaitForSecondsRealtime(1);
+            yield return new WaitForSecondsRealtime(0.5f);
             allStones[temp].BlinkOff();
         }
     }

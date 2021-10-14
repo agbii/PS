@@ -10,9 +10,12 @@ public class gameManager : MonoBehaviour
     public GameObject startPanel;
     public GameObject successPanel;
     public GameObject failPanel;
+    public GameObject msgPanel;
 
     public Text levelText;
     public Text replayText;
+    public Text msgText;
+
     public Board board;
     public LevelManager levelManager;
 
@@ -62,6 +65,7 @@ public class gameManager : MonoBehaviour
     {
         if (board.clickCount == board.answerCount)
         {
+            msgPanel.SetActive(false);
             success = board.CheckAnswer();
             board.DeactivateStoneCollider();
             if(success)
@@ -80,7 +84,7 @@ public class gameManager : MonoBehaviour
     public void GameStart()
     {
         startPanel.SetActive(false);
-        replayTimes = 5;
+        replayTimes = 2;
         board.StartBoard();
     }
 
@@ -107,11 +111,34 @@ public class gameManager : MonoBehaviour
         if (replayTimes > 0)
         {
             replayTimes -= 1;
-            replayText.text = replayTimes.ToString();
+            Debug.Log("replayTimes = " + replayTimes.ToString());
+            if(replayTimes != 0)
+            {
+                replayText.text = replayTimes.ToString();
+            }
+            else
+            {
+                replayText.text = "AD";
+            }
             board.Reset();
             board.ActivateStoneCollider();
         }
     }
 
+    public void ShowMsgRemember()
+    {
+        msgText.text = "REMEMBER!";
+        msgPanel.SetActive(true);
+        successPanel.SetActive(false);
+        failPanel.SetActive(false);
+    }
+
+    public void ShowMsgClick()
+    {
+        msgText.text = "CLICK!";
+        msgPanel.SetActive(true);
+        successPanel.SetActive(false);
+        failPanel.SetActive(false);
+    }
 
 }
