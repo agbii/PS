@@ -59,11 +59,12 @@ public class Board : MonoBehaviour
         MakeRandomQuestion(answerCount);
 
         // 순서에 따라 깜빡임, 퀴즈에 따라 위치 변경
-        StartCoroutine("BlinkAndApplyQuiz");
+        StartCoroutine("GamePlay");
+        
     }
 
     // 보드판 생성 함수
-    void SpawnStones()
+    public void SpawnStones()
     {
         int id = 0;
 
@@ -101,6 +102,8 @@ public class Board : MonoBehaviour
                 stone.name = "stone - " + stone.GetComponent<Stone>().stoneId;
             }
         }
+
+        DeactivateStoneCollider();
     }
 
     // 정답 배열을 랜덤 순서로 변경
@@ -125,8 +128,7 @@ public class Board : MonoBehaviour
         }
     }
 
-    // 시간차 두고 stoneIds[] 깜빡이기
-    IEnumerator BlinkAndApplyQuiz()
+    IEnumerator GamePlay()
     {
         for (int j = 0; j < answerArray.Length; j++)
         {
@@ -136,6 +138,16 @@ public class Board : MonoBehaviour
             allStones[temp].BlinkOff();
         }
 
+        yield return new WaitForSecondsRealtime(0.1f);
+        
+        StartCoroutine("ApplyQuiz");
+        yield return new WaitForSecondsRealtime(0.5f);
+        ActivateStoneCollider();
+    }
+
+    // 시간차 두고 stoneIds[] 깜빡이기
+    public IEnumerator ApplyQuiz()
+    {
         // 퀴즈 배열받아서 for문 돌리고 실행
         for (int i = 0; i < quizCount; i++)
         {
@@ -196,44 +208,6 @@ public class Board : MonoBehaviour
                 Debug.Log("ERROR!!");
             }
         }
-
-        // yield return new WaitForSecondsRealtime(0.5f);
-
-        // for (int i = 0; i < stoneIds.Length; i++)
-        // {
-        //     allStones[stoneIds[i]].RedrawStone();
-        // }
-
-        // yield return new WaitForSecondsRealtime(0.5f);
-
-        // for (int i = 0; i < answerArray.Length; i++)
-        // {
-        //     int temp = Array.IndexOf(stoneIds, answerArray[i]);
-        //     allStones[temp].BlinkStone();
-        //     yield return new WaitForSecondsRealtime(1);
-        //     allStones[temp].BlinkOff();
-        // }
-
-        // yield return new WaitForSecondsRealtime(0.5f);
-
-        // FlipVertical();
-
-        // yield return new WaitForSecondsRealtime(0.5f);
-
-        // for (int i = 0; i < stoneIds.Length; i++)
-        // {
-        //     allStones[stoneIds[i]].RedrawStone();
-        // }
-
-        // yield return new WaitForSecondsRealtime(0.5f);
-
-        // for (int i = 0; i < answerArray.Length; i++)
-        // {
-        //     int temp = Array.IndexOf(stoneIds, answerArray[i]);
-        //     allStones[temp].BlinkStone();
-        //     yield return new WaitForSecondsRealtime(1);
-        //     allStones[temp].BlinkOff();
-        // }
     }
 
     void RotateRight()
@@ -347,6 +321,7 @@ public class Board : MonoBehaviour
     public bool CheckAnswer()
     {
         bool success = true;
+        // Time.timeScale = 0f;
 
         for (int i = 0; i < answerCount; i++)
         {
@@ -374,21 +349,66 @@ public class Board : MonoBehaviour
         }
     }
 
-    IEnumerator StoneBlinkAndReset()
+    // IEnumerator StoneBlinkAndReset()
+    // {
+    //     for (int i = 0; i < stoneIds.Length; i++)
+    //     {
+    //         allStones[stoneIds[i]].RedrawStone();
+    //     }
+
+    //     yield return new WaitForSecondsRealtime(0.5f);
+
+    //     for (int i = 0; i < answerArray.Length; i++)
+    //     {
+    //         int temp = Array.IndexOf(stoneIds, answerArray[i]);
+    //         allStones[temp].BlinkStone();
+    //         yield return new WaitForSecondsRealtime(1);
+    //         allStones[temp].BlinkOff();
+    //     }
+    // }
+
+    public void DeactivateStoneCollider()
     {
-        for (int i = 0; i < stoneIds.Length; i++)
-        {
-            allStones[stoneIds[i]].RedrawStone();
+        for (int i = 0; i < allStones.Length; i++)
+        {   
+            allStones[i].GetComponent<BoxCollider2D>().enabled = false;
         }
+    }
 
-        yield return new WaitForSecondsRealtime(0.5f);
-
-        for (int i = 0; i < answerArray.Length; i++)
+    public void ActivateStoneCollider()
+    {
+        for (int i = 0; i < allStones.Length; i++)
         {
-            int temp = Array.IndexOf(stoneIds, answerArray[i]);
+            allStones[i].GetComponent<BoxCollider2D>().enabled = true;
+        }
+    }
+
+    public void Reset()
+    {
+        DestroyStones();
+        SpawnStones();
+        StartCoroutine("GamePlay");
+    }
+
+    IEnumerator BlinkStones()
+    {
+        yield return new WaitForSecondsRealtime(0.1f);
+        Debug.Log("Blinking Stones");
+        DeactivateStoneCollider();
+        for (int j = 0; j < answerArray.Length; j++)
+        {
+            int temp = Array.IndexOf(stoneIds, answerArray[j]);
             allStones[temp].BlinkStone();
             yield return new WaitForSecondsRealtime(1);
             allStones[temp].BlinkOff();
+        }
+    }
+
+    public void DestroyStones()
+    {
+        for(int i = 0; i < allStones.Length; i++)
+        {
+            Destroy(allStones[i]);
         }
     }
 

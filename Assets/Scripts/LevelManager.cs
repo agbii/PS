@@ -76,8 +76,18 @@ public class LevelManager : MonoBehaviour
         
     }
 
-    void SaveLevel()
+    public void SaveLevel()
     {
-        PlayerPrefs.SetInt("Level", currentLevel+1);
+        PlayerPrefs.SetInt("levelSave", currentLevel+1);
+    }
+
+    public void LoadLevel()
+    {
+        SceneManager.LoadScene(PlayerPrefs.GetString("levelSave", "LEVEL 1"));
+    }
+
+    public void DeleteStones()
+    {
+        
     }
 }

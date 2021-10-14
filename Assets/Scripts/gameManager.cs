@@ -12,10 +12,13 @@ public class gameManager : MonoBehaviour
     public GameObject failPanel;
 
     public Text levelText;
+    public Text replayText;
     public Board board;
     public LevelManager levelManager;
 
     public static gameManager I;
+
+    public int replayTimes;
 
     bool success;
 
@@ -33,6 +36,7 @@ public class gameManager : MonoBehaviour
 
     private void InitializeGame()
     {
+        levelManager.LoadLevel();
         ShowStartPanel();
     }
 
@@ -43,6 +47,7 @@ public class gameManager : MonoBehaviour
 
     void LevelSuccess()
     {
+        levelManager.SaveLevel();
         levelManager.currentLevel += 1;
         successPanel.SetActive(true);
     }
@@ -58,6 +63,7 @@ public class gameManager : MonoBehaviour
         if (board.clickCount == board.answerCount)
         {
             success = board.CheckAnswer();
+            board.DeactivateStoneCollider();
             if(success)
             {
                 LevelSuccess();
@@ -68,11 +74,13 @@ public class gameManager : MonoBehaviour
             }
             board.clickCount = 0;
         }
+        Debug.Log("currentLevel = " + levelManager.currentLevel.ToString());
     }
 
     public void GameStart()
     {
         startPanel.SetActive(false);
+        replayTimes = 5;
         board.StartBoard();
     }
 
@@ -82,15 +90,28 @@ public class gameManager : MonoBehaviour
         SceneManager.LoadScene(levelManager.currentLevel.ToString());
     }
 
+    public void Resume()
+    {
+        failPanel.SetActive(false);
+        board.ActivateStoneCollider();
+    }
+
     void ShowLevelText()
     {
         Scene scene = SceneManager.GetActiveScene();
         levelText.text = "LEVEL " + scene.name.ToString();
     }
 
-    void WrongAnswer()
+    public void UseReplay()
     {
-
+        if (replayTimes > 0)
+        {
+            replayTimes -= 1;
+            replayText.text = replayTimes.ToString();
+            board.Reset();
+            board.ActivateStoneCollider();
+        }
     }
+
 
 }
