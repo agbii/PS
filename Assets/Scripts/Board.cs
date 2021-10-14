@@ -123,9 +123,9 @@ public class Board : MonoBehaviour
             Vector3 pos1 = new Vector3(-0.5f, 3f, 0f);
             SpawnQuiz(pos1, quizTypes[quizzes[0]]);
             Vector3 pos2 = new Vector3(0.5f, 3f, 0f);
-            SpawnQuiz(pos1, quizTypes[quizzes[1]]);
+            SpawnQuiz(pos2, quizTypes[quizzes[1]]);
             Vector3 pos3 = new Vector3(1.5f, 3f, 0f);
-            SpawnQuiz(pos1, quizTypes[quizzes[2]]);
+            SpawnQuiz(pos3, quizTypes[quizzes[2]]);
         }
         else
         {
