@@ -23,7 +23,7 @@ public class Board : MonoBehaviour
     int[] answerArray;
     int[] userAnswer;
     bool checkCount;
-    int clickCount;
+    public int clickCount;
 
     // 외부에서 받는 레벨 전용 변수
     public int answerCount;
@@ -32,9 +32,6 @@ public class Board : MonoBehaviour
 
     // 임시 저장소
     public Stone tempStone;
-
-    // 모든 퀴즈종류 정보 저장
-    public Quiz[] quizTypes;
     Quiz quiz;
 
     Animator anim;
@@ -43,6 +40,11 @@ public class Board : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
+    {
+
+    }
+
+    public void StartBoard()
     {
         // stone 개수에 따른 array 크기 지정
         allStones = new Stone[boardWidth * boardHeight];
@@ -76,11 +78,11 @@ public class Board : MonoBehaviour
                 stone.transform.parent = this.transform;
 
                 // transform 시각적 확인 위해 임시로 임의 색상 씌우기
-                // float rnd1 = UnityEngine.Random.Range(0f, 1f);
-                // float rnd2 = UnityEngine.Random.Range(0f, 1f);
-                // float rnd3 = UnityEngine.Random.Range(0f, 1f);
-                // sprite = stone.GetComponent<SpriteRenderer>();
-                // sprite.material.color = new Color(rnd1, rnd2, rnd3);
+                float rnd1 = UnityEngine.Random.Range(0f, 1f);
+                float rnd2 = UnityEngine.Random.Range(0f, 1f);
+                float rnd3 = UnityEngine.Random.Range(0f, 1f);
+                sprite = stone.GetComponent<SpriteRenderer>();
+                sprite.material.color = new Color(rnd1, rnd2, rnd3);
 
                 // 생성한 stone을 allStones array에 저장
                 allStones[id] = stone;
@@ -337,14 +339,14 @@ public class Board : MonoBehaviour
 
     public void GetClickedStone(Stone stoneClicked)
     {
-
+        Debug.Log(stoneClicked.stoneId);
         userAnswer[clickCount] = stoneClicked.stoneId;
         clickCount += 1;
     }
 
-    public void CheckAnswer()
+    public bool CheckAnswer()
     {
-        bool success;
+        bool success = true;
 
         for (int i = 0; i < answerCount; i++)
         {
@@ -353,10 +355,11 @@ public class Board : MonoBehaviour
             if (!success)
             {
                 Debug.Log("WRONG!");
-                return;
+                return success;
             }
         }
         Debug.Log("SUCCESS!!");
+        return success;
     }
 
     bool CheckCurrentAnswer(int answer, int userAnswer)
@@ -392,10 +395,6 @@ public class Board : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (clickCount == answerCount)
-        {
-            CheckAnswer();
-            clickCount = 0;
-        }
+
     }
 }

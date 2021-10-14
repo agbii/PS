@@ -53,4 +53,9 @@ public class Stone : MonoBehaviour
     {
         transform.position = new Vector3(posIndex.x, posIndex.y, 1f);
     }
+
+    void OnMouseDown()
+    {
+        board.GetClickedStone(this);
+    }
 }
