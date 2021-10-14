@@ -51,8 +51,15 @@ public class gameManager : MonoBehaviour
     void LevelSuccess()
     {
         levelManager.SaveLevel();
-        levelManager.currentLevel += 1;
-        successPanel.SetActive(true);
+        if(levelManager.currentLevel != levelManager.lastLevel)
+        {
+            levelManager.currentLevel += 1;
+            successPanel.SetActive(true);
+        }
+        else
+        {
+            ShowMsgCongrats();
+        }
     }
 
     void LevelFail()
@@ -136,6 +143,14 @@ public class gameManager : MonoBehaviour
     public void ShowMsgClick()
     {
         msgText.text = "CLICK!";
+        msgPanel.SetActive(true);
+        successPanel.SetActive(false);
+        failPanel.SetActive(false);
+    }
+
+    public void ShowMsgCongrats()
+    {
+        msgText.text = "YOU WON!";
         msgPanel.SetActive(true);
         successPanel.SetActive(false);
         failPanel.SetActive(false);
