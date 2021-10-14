@@ -18,7 +18,7 @@ public class gameManager : MonoBehaviour
     public Board board;
     public LevelManager levelManager;
 
-    public bool isLoaded;
+    
 
     public static gameManager I;
 
@@ -28,21 +28,19 @@ public class gameManager : MonoBehaviour
 
     void Awake()
     {
-        isLoaded = false;
         I = this;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        isLoaded = true;
         ShowLevelText();
         InitializeGame();
     }
 
     private void InitializeGame()
     {
-        levelManager.LoadLevel(isLoaded);
+        Debug.Log("loaded once");
         ShowStartPanel();
     }
 
@@ -53,10 +51,10 @@ public class gameManager : MonoBehaviour
 
     void LevelSuccess()
     {
-        levelManager.SaveLevel();
         if(levelManager.currentLevel != levelManager.lastLevel)
         {
             levelManager.currentLevel += 1;
+            levelManager.SaveLevel();
             successPanel.SetActive(true);
         }
         else
@@ -68,6 +66,7 @@ public class gameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log("currentLevel = " + levelManager.currentLevel.ToString());
         if (board.clickCount == board.answerCount)
         {
             msgPanel.SetActive(false);
@@ -83,7 +82,6 @@ public class gameManager : MonoBehaviour
             }
             board.clickCount = 0;
         }
-        Debug.Log("currentLevel = " + levelManager.currentLevel.ToString());
     }
 
     public void GameStart()
@@ -95,8 +93,7 @@ public class gameManager : MonoBehaviour
 
     public void StartNextLevel()
     {
-        Debug.Log("Loading");
-        SceneManager.LoadScene(levelManager.currentLevel.ToString());
+        SceneManager.LoadScene("Game");
         successPanel.SetActive(false);
     }
 
@@ -108,8 +105,7 @@ public class gameManager : MonoBehaviour
 
     void ShowLevelText()
     {
-        Scene scene = SceneManager.GetActiveScene();
-        levelText.text = "LEVEL " + scene.name.ToString();
+        levelText.text = "LEVEL " + levelManager.currentLevel;
     }
 
     public void UseReplay()
