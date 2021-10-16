@@ -10,6 +10,7 @@ public class gameManager : MonoBehaviour
     public GameObject startPanel;
     public GameObject successPanel;
     public GameObject msgPanel;
+    public GameObject pausePanel;
 
     public Text levelText;
     public Text replayText;
@@ -18,11 +19,13 @@ public class gameManager : MonoBehaviour
     public Board board;
     public LevelManager levelManager;
 
+    bool showPause;
+
     
 
     public static gameManager I;
 
-    // public int replayTimes;
+    public int replayTimes;
 
     bool success;
 
@@ -36,6 +39,7 @@ public class gameManager : MonoBehaviour
     {
         ShowLevelText();
         InitializeGame();
+        showPause = false;
     }
 
     private void InitializeGame()
@@ -87,7 +91,7 @@ public class gameManager : MonoBehaviour
     public void GameStart()
     {
         startPanel.SetActive(false);
-        // replayTimes = 2;
+        replayTimes = 1;
         board.StartBoard();
     }
 
@@ -112,21 +116,21 @@ public class gameManager : MonoBehaviour
     {
         board.Reset();
         board.ActivateStoneCollider();
-        // if (replayTimes > 0)
-        // {
-        //     replayTimes -= 1;
-        //     Debug.Log("replayTimes = " + replayTimes.ToString());
-        //     if(replayTimes != 0)
-        //     {
-        //         replayText.text = replayTimes.ToString();
-        //     }
-        //     else
-        //     {
-        //         replayText.text = "AD";
-        //     }
-        //     board.Reset();
-        //     board.ActivateStoneCollider();
-        // }
+        if (replayTimes > 0)
+        {
+            replayTimes -= 1;
+            Debug.Log("replayTimes = " + replayTimes.ToString());
+            if(replayTimes != 0)
+            {
+                replayText.text = replayTimes.ToString();
+            }
+            else
+            {
+                replayText.text = "AD";
+            }
+            board.Reset();
+            board.ActivateStoneCollider();
+        }
     }
 
     public void ShowMsgRemember()
@@ -156,6 +160,25 @@ public class gameManager : MonoBehaviour
         board.ActivateStoneCollider();
         msgPanel.SetActive(true);
         successPanel.SetActive(false);
+    }
+
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene("Game");
+    }
+    
+    public void TogglePausePanel()
+    {
+        if(showPause)
+        {
+            showPause = false;
+            pausePanel.SetActive(true);
+        }
+        else
+        {
+            showPause = true;
+            pausePanel.SetActive(false);
+        }
     }
 
 }
